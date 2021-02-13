@@ -17,8 +17,9 @@ struct editorConfig E;
 // Enable raw mode and turn off echo
 void enableRawMode()
 {
-    if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
+    if (tcgetattr(STDIN_FILENO, &E.orig_termios) == -1)
         die("tcgetattr");
+
     atexit(disableRawMode);
     struct termios raw = orig_termios;
     // Turn off terminal emulators
