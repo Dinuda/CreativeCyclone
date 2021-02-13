@@ -17,6 +17,8 @@ void enableRawMode()
     raw.c_iflag &= ~(ICRNL | IXON);
     // Disable CTRL+S and CTRL+Q
     raw.c_iflag &= ~(IXON);
+    // Turn off all processing
+    raw.c_oflag &= ~(OPOST);
     // local flag and disable CTRL-V
     raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
