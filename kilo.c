@@ -11,7 +11,8 @@ struct termios orig_termios;
 // Enable raw mode and turn off echo
 void enableRawMode()
 {
-    tcgetattr(STDIN_FILENO, &orig_termios);
+    if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
+        die("tcgetattr");
     atexit(disableRawMode);
     struct termios raw = orig_termios;
     // Turn off terminal emulators
