@@ -48,7 +48,7 @@ void die(const char *s)
     exit(1);
 }
 
-// Refactor keyboard Input
+// Refactor keyboard read
 char editorReadKey()
 {
     int nread;
@@ -60,7 +60,8 @@ char editorReadKey()
     }
     return c;
 }
-/*** input ***/
+
+// Refactor keyboard input
 void editorProcessKeypress()
 {
     char c = editorReadKey();
