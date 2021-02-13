@@ -13,6 +13,9 @@ void enableRawMode()
     tcgetattr(STDIN_FILENO, &orig_termios);
     atexit(disableRawMode);
     struct termios raw = orig_termios;
+    // Turn off terminal emulators
+    raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    raw.c_cflag |= (CS8);
     // Fic CTRL+M
     raw.c_iflag &= ~(ICRNL | IXON);
     // Disable CTRL+S and CTRL+Q
