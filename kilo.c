@@ -64,7 +64,7 @@ int main()
         {
             printf("%d ('%c')\r\n", c, c);
         }
-        if (c == 'q')
+        if (c == CTRL_KEY('q'))
             break;
     }
     return 0;
