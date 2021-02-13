@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -10,9 +11,18 @@
 struct termios orig_termios;
 struct editorConfig
 {
+    int screenrows;
+    int screencols;
     struct termios orig_termios;
 };
 struct editorConfig E;
+
+// Init editor
+void initEditor()
+{
+    if (getWindowSize(&E.screenrows, &E.screencols) == -1)
+        die("getWindowSize");
+}
 
 // Enable raw mode and turn off echo
 void enableRawMode()
@@ -55,6 +65,22 @@ void die(const char *s)
 
     perror(s);
     exit(1);
+}
+
+// getWindowSize
+int getWindowSize(int *rows, int *cols)
+{
+    struct winsize ws;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
+    {
+        return -1;
+    }
+    else
+    {
+        *cols = ws.ws_col;
+        *rows = ws.ws_row;
+        return 0;
+    }
 }
 
 // Refactor keyboard read
@@ -107,6 +133,7 @@ void editorRefreshScreen()
 int main()
 {
     enableRawMode();
+    initEditor();
     while (1)
     {
         editorRefreshScreen();
