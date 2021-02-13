@@ -44,8 +44,7 @@ void enableRawMode()
 // Disable raw mode and turn off echo
 void disableRawMode()
 {
-    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
-        die("tcsetattr");
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
 }
 
 // Error Handling
