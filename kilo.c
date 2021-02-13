@@ -26,6 +26,7 @@ enum editorKey
     ARROW_UP,
     ARROW_DOWN,
     HOME_KEY,
+    DEL_KEY,
     END_KEY,
     PAGE_UP,
     PAGE_DOWN
