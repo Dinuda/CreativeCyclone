@@ -57,6 +57,29 @@ void disableRawMode()
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
 }
 
+// Get Cursor Position
+int getCursorPosition(int *rows, int *cols)
+{
+    char buf[32];
+    unsigned int i = 0;
+    if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
+        return -1;
+    while (i < sizeof(buf) - 1)
+    {
+        if (read(STDIN_FILENO, &buf[i], 1) != 1)
+            break;
+        if (buf[i] == 'R')
+            break;
+        i++;
+    }
+    buf[i] = '\0';
+    if (buf[0] != '\x1b' || buf[1] != '[')
+        return -1;
+    if (sscanf(&buf[2], "%d;%d", rows, cols) != 2)
+        return -1;
+    return 0;
+}
+
 // Error Handling
 void die(const char *s)
 {
@@ -68,59 +91,64 @@ void die(const char *s)
 }
 
 // getWindowSize
+
 int getWindowSize(int *rows, int *cols)
 {
     struct winsize ws;
-    if (1 || ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
-    {
-        if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12)
-            return -1;
-        editorReadKey();
-        return -1;
-    }
-    else
-    {
-        *cols = ws.ws_col;
-        *rows = ws.ws_row;
-        return 0;
-    }
-}
-
-// Refactor keyboard read
-char editorReadKey()
-{
-    int nread;
-    char c;
-    while ((nread = read(STDIN_FILENO, &c, 1)) != 1)
-    {
-        if (nread == -1 && errno != EAGAIN)
-            die("read");
-    }
-    return c;
-}
-
-// Refactor keyboard input
-void editorProcessKeypress()
-{
-    char c = editorReadKey();
-    switch (c)
-    {
-    case CTRL_KEY('q'):
-        write(STDOUT_FILENO, "\x1b[2J", 4);
-        write(STDOUT_FILENO, "\x1b[H", 3);
-        exit(0);
-        break;
-    }
-}
-
-// Tidles
-void editorDrawRows()
-{
-    int y;
-    for (y = 0; y < E.screenrows; y++)
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
     {
         {
-            write(STDOUT_FILENO, "~\r\n", 3);
+            if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12)
+                return -1;
+            return getCursorPosition(rows, cols);
+        }
+        else
+        {
+            *cols = ws.ws_col;
+            *rows = ws.ws_row;
+            return 0;
+        }
+    }
+
+    // Refactor keyboard read
+    char editorReadKey()
+    {
+        int nread;
+        char c;
+        while ((nread = read(STDIN_FILENO, &c, 1)) != 1)
+        {
+            if (nread == -1 && errno != EAGAIN)
+                die("read");
+        }
+        return c;
+    }
+
+    // Refactor keyboard input
+    void editorProcessKeypress()
+    {
+        char c = editorReadKey();
+        switch (c)
+        {
+        case CTRL_KEY('q'):
+            write(STDOUT_FILENO, "\x1b[2J", 4);
+            write(STDOUT_FILENO, "\x1b[H", 3);
+            exit(0);
+            break;
+        }
+    }
+
+    // Tidles
+
+    void editorDrawRows()
+    {
+        int y;
+        for (y = 0; y < E.screenrows; y++)
+        {
+            write(STDOUT_FILENO, "~", 1);
+            if (y < E.screenrows - 1)
+            {
+                write(STDOUT_FILENO, "\r\n", 2);
+            }
         }
     }
 
