@@ -114,30 +114,31 @@ void editorProcessKeypress()
 void editorDrawRows()
 {
     int y;
-    for (y = 0; y < 24; y++)
+    for (y = 0; y < E.screenrows; y++)
     {
-        write(STDOUT_FILENO, "~\r\n", 3);
+        {
+            write(STDOUT_FILENO, "~\r\n", 3);
+        }
     }
-}
 
-// Refresh the screen
-void editorRefreshScreen()
-{
-    write(STDOUT_FILENO, "\x1b[2J", 4);
-    write(STDOUT_FILENO, "\x1b[H", 3);
-
-    editorDrawRows();
-    write(STDOUT_FILENO, "\x1b[H", 3);
-}
-
-int main()
-{
-    enableRawMode();
-    initEditor();
-    while (1)
+    // Refresh the screen
+    void editorRefreshScreen()
     {
-        editorRefreshScreen();
-        editorProcessKeypress();
+        write(STDOUT_FILENO, "\x1b[2J", 4);
+        write(STDOUT_FILENO, "\x1b[H", 3);
+
+        editorDrawRows();
+        write(STDOUT_FILENO, "\x1b[H", 3);
     }
-    return 0;
-}
+
+    int main()
+    {
+        enableRawMode();
+        initEditor();
+        while (1)
+        {
+            editorRefreshScreen();
+            editorProcessKeypress();
+        }
+        return 0;
+    }
