@@ -37,6 +37,13 @@ void disableRawMode()
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
 
+// Error Handling
+void die(const char *s)
+{
+    perror(s);
+    exit(1);
+}
+
 int main()
 {
     enableRawMode();
