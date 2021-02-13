@@ -21,7 +21,7 @@ void enableRawMode()
         die("tcgetattr");
 
     atexit(disableRawMode);
-    struct termios raw = orig_termios;
+    struct termios raw = E.orig_termios;
     // Turn off terminal emulators
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     raw.c_cflag |= (CS8);
