@@ -6,7 +6,13 @@
 #include <termios.h>
 #include <unistd.h>
 
+// Structures
 struct termios orig_termios;
+struct editorConfig
+{
+    struct termios orig_termios;
+};
+struct editorConfig E;
 
 // Enable raw mode and turn off echo
 void enableRawMode()
