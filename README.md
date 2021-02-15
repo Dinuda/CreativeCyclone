@@ -16,9 +16,9 @@ Light weight text editor for the 21st Centaury.
 
 <h4> Run</h4>
 
-    cc kilo.c -o kilo
+    cc creative.c -o creative
 
-    ./kilo
+    ./creative
 
     echo $?
 
@@ -37,9 +37,9 @@ Light weight text editor for the 21st Centaury.
 
 <h4> Run</h4>
 
-    cc kilo.c -o kilo
+    cc creative.c -o creative
 
-    ./kilo
+    ./creative
 
     echo $?
 
