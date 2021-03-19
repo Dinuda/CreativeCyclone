@@ -8,7 +8,7 @@ Light weight text editor for the 21st Centaury.
 
 ## Run on system
 
-<MAC>
+<LINUX>
     <h3>MAC</h3>
     <p>Make sure you have make installed </p>
 
